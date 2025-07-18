@@ -2,84 +2,107 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Malla Curricular Bioquímica</title>
+  <title>Malla Curricular Bioquímica - UACh</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f2f4f8;
-      color: #333;
+      background-color: #f9f9f9;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      color: #333;
     }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
+    header {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #002856;
+      color: white;
+    }
+    header img {
+      height: 60px;
+      margin-right: 15px;
+    }
+    header h1 {
+      font-size: 1.8em;
+    }
+    .container {
+      padding: 20px;
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: auto;
+      gap: 15px;
     }
     .semester {
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      padding: 16px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 10px;
     }
     .semester h2 {
-      font-size: 1.2em;
-      color: #2a6f97;
+      font-size: 1.1em;
       margin-bottom: 10px;
+      background-color: #e0e7ef;
+      padding: 6px;
+      border-radius: 6px;
     }
     .course {
-      background: #e2ecf5;
-      padding: 8px 10px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      cursor: pointer;
+      border: 1px solid #c0c0c0;
+      border-radius: 6px;
+      padding: 6px;
+      margin: 5px 0;
       position: relative;
-      transition: background 0.2s ease;
+      background-color: #e8f0fe;
+      cursor: pointer;
+      transition: background 0.3s;
     }
     .course.locked {
-      background: #d3d3d3;
+      background-color: #ddd;
       cursor: not-allowed;
     }
     .course.passed {
-      background: #a3d5a3;
+      background-color: #c2f0c2;
       text-decoration: line-through;
-    }
-    .course:hover:not(.locked) {
-      background: #b4d5ea;
     }
     .tooltip {
       visibility: hidden;
-      background-color: #333;
+      background-color: #444;
       color: #fff;
-      text-align: center;
-      border-radius: 6px;
-      padding: 4px 8px;
+      border-radius: 5px;
+      padding: 5px 10px;
       position: absolute;
-      z-index: 1;
-      bottom: 110%;
+      top: -30px;
       left: 50%;
       transform: translateX(-50%);
       white-space: nowrap;
       font-size: 0.8em;
       opacity: 0;
       transition: opacity 0.3s;
+      z-index: 1;
     }
     .course:hover .tooltip {
       visibility: visible;
       opacity: 1;
     }
+    @media (min-width: 1000px) {
+      .grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Malla Curricular Bioquímica</h1>
-  <div class="grid" id="grid"></div>
+  <header>
+    <img src="logo.png" alt="Logo UACh">
+    <h1>Malla Curricular Bioquímica - Universidad Austral de Chile</h1>
+  </header>
+  <div class="container">
+    <div class="grid" id="grid"></div>
+  </div>
   <script>
     const data = {
-      "SEMESTRE 1": [
+      "1° SEMESTRE": [
         { code: "BIMI070", name: "BIOLOGÍA GENERAL DE LA CÉLULA" },
         { code: "CIDI046", name: "COMUNICACIÓN EN LENGUA MATERNA" },
         { code: "ESBI050", name: "RESPONSABILIDAD SOCIAL DEL BIOQUÍMICO" },
@@ -87,7 +110,7 @@
         { code: "MATM055", name: "ÁLGEBRA" },
         { code: "QUIM045", name: "BASES DE QUÍMICA" }
       ],
-      "SEMESTRE 2": [
+      "2° SEMESTRE": [
         { code: "DYRE070", name: "EDUCACIÓN FÍSICA Y SALUD" },
         { code: "FSCA095", name: "FÍSICA BÁSICA", reqs: ["MATM055"] },
         { code: "HIPA110", name: "BIOLOGÍA HUMANA", reqs: ["BIMI070"] },
@@ -95,7 +118,7 @@
         { code: "MATM099", name: "CÁLCULO", reqs: ["MATM055"] },
         { code: "QUIM095", name: "EQUILIBRIO QUÍMICO", reqs: ["QUIM045"] }
       ],
-      "SEMESTRE 3": [
+      "3° SEMESTRE": [
         { code: "BIMI100", name: "BIOLOGÍA CELULAR CONTEMPORÁNEA", reqs: ["BIMI070"] },
         { code: "CIDI085", name: "INGLÉS I", reqs: ["CIDI046"] },
         { code: "FSCA165", name: "FÍSICA PARA BIOQUÍMICA", reqs: ["FSCA095", "MATM099"] },
@@ -103,7 +126,7 @@
         { code: "QUIM126", name: "ANÁLISIS QUÍMICO", reqs: ["QUIM095"] },
         { code: "QUIM185", name: "TERMODINÁMICA QUÍMICA", reqs: ["MATM099", "QUIM095"] }
       ],
-      "SEMESTRE 4": [
+      "4° SEMESTRE": [
         { code: "BIMI120", name: "TALLER DE DISOLUCIONES ACUOSAS", reqs: ["QUIM095", "QUIM157", "MATM055"] },
         { code: "CAEV127", name: "GENÉTICA CLÁSICA Y DE POBLACIONES", reqs: ["BIMI070"] },
         { code: "CIDI097", name: "INGLÉS II", reqs: ["CIDI085"] },
@@ -112,37 +135,37 @@
         { code: "QUIM158", name: "QUÍMICA ORGÁNICA APLICADA", reqs: ["QUIM157"] },
         { code: "QUIM132", name: "CINÉTICA QUÍMICA", reqs: ["QUIM095", "QUIM185"] }
       ],
-      "SEMESTRE 5": [
+      "5° SEMESTRE": [
         { code: "BIMI155", name: "MICROBIOLOGÍA", reqs: ["HIPA110"] },
         { code: "BIMI200", name: "BIOQUÍMICA GENERAL", reqs: ["HIPA110", "CIDI097", "QUIM158", "QUIM132", "BIMI120"] },
         { code: "BIMI215", name: "INSTRUMENTACIÓN BIOQUÍMICA", reqs: ["QUIM126", "FSCA165", "CIDI097", "QUIM158", "QUIM132", "BIMI120"] },
         { code: "ESBI215", name: "TALLER DE INVESTIGACIÓN I", reqs: ["QUIM126", "BIMI100", "BIMI120"] }
       ],
-      "SEMESTRE 6": [
+      "6° SEMESTRE": [
         { code: "BIMI150", name: "BIOQUÍMICA Y FISIOLOGÍA VEGETAL", reqs: ["BIMI200", "BIMI215"] },
         { code: "BIMI225", name: "BIOLOGÍA MOLECULAR", reqs: ["CAEV127", "BIMI200", "BIMI215"] },
         { code: "FISL135", name: "FISIOLOGÍA GENERAL Y DE SISTEMAS", reqs: ["BIMI100", "BIMI200"] },
         { code: "INMU110", name: "INMUNOLOGÍA", reqs: ["BIMI200", "BIMI215"] }
       ],
-      "SEMESTRE 7": [
+      "7° SEMESTRE": [
         { code: "BIMI160", name: "GESTIÓN DE PROYECTOS Y LABORATORIOS", reqs: ["BIMI200", "BIMI215", "ESBI215"] },
         { code: "BIMI235", name: "BIOLOGÍA CELULAR MOLECULAR", reqs: ["BIMI225"] },
         { code: "BIMI238", name: "BIOQUÍMICA CLÍNICA Y PATOLOGÍA MOLECULAR", reqs: ["BIMI225", "FISL135"] },
         { code: "ELECT40", name: "ELECTIVO DE ESPECIALIDAD" },
         { code: "ESBI223", name: "TALLER DE INVESTIGACIÓN II", reqs: ["BIMI200", "BIMI215", "ESBI215"] }
       ],
-      "SEMESTRE 8": [
+      "8° SEMESTRE": [
         { code: "BIMI180", name: "BIOMEDICINA Y FARMACOLOGÍA", reqs: ["BIMI238"] },
         { code: "BIMI245", name: "BIOTECNOLOGÍA MOLECULAR", reqs: ["BIMI225", "BIMI155", "ESBI223"] },
         { code: "BIMI255", name: "DIAGNÓSTICO MOLECULAR, CLÍNICO Y MICROBIOLÓGICO", reqs: ["BIMI238", "INMU110", "BIMI155"] },
         { code: "ESBI225", name: "PROYECTO DE INVESTIGACIÓN", reqs: ["BIMI225", "ESBI223"] },
         { code: "ESBI295", name: "VINCULACIÓN CON EL ÁMBITO LABORAL", reqs: ["BIMI235", "BIMI160", "ESBI223"] }
       ],
-      "SEMESTRE 9": [
+      "9° SEMESTRE": [
         { code: "ESBI250", name: "INTERNADO PROFESIONAL I", reqs: ["BIMI180", "BIMI245", "BIMI255", "ESBI295"] },
         { code: "ESBI296", name: "TESIS I", reqs: ["BIMI180", "BIMI245", "BIMI255", "ESBI295"] }
       ],
-      "SEMESTRE 10": [
+      "10° SEMESTRE": [
         { code: "ESBI270", name: "INTERNADO PROFESIONAL II", reqs: ["ESBI250"] },
         { code: "ESBI297", name: "TESIS II", reqs: ["ESBI296"] }
       ]
@@ -168,7 +191,6 @@
         const h2 = document.createElement("h2");
         h2.textContent = semester;
         col.appendChild(h2);
-
         for (const course of courses) {
           const div = document.createElement("div");
           div.className = "course";
