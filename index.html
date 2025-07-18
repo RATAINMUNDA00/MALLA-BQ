@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Malla Curricular Bioquímica</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f4f8;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .semester {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      padding: 16px;
+    }
+    .semester h2 {
+      font-size: 1.2em;
+      color: #2a6f97;
+      margin-bottom: 10px;
+    }
+    .course {
+      background: #e2ecf5;
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s ease;
+    }
+    .course.locked {
+      background: #d3d3d3;
+      cursor: not-allowed;
+    }
+    .course.passed {
+      background: #a3d5a3;
+      text-decoration: line-through;
+    }
+    .course:hover:not(.locked) {
+      background: #b4d5ea;
+    }
+    .tooltip {
+      visibility: hidden;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 4px 8px;
+      position: absolute;
+      z-index: 1;
+      bottom: 110%;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: 0.8em;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .course:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Curricular Bioquímica</h1>
+  <div class="grid" id="grid"></div>
+  <script>
+    const data = {
+      "SEMESTRE 1": [
+        { code: "BIMI070", name: "BIOLOGÍA GENERAL DE LA CÉLULA" },
+        { code: "CIDI046", name: "COMUNICACIÓN EN LENGUA MATERNA" },
+        { code: "ESBI050", name: "RESPONSABILIDAD SOCIAL DEL BIOQUÍMICO" },
+        { code: "ESBI080", name: "TALLER INTEGRAL DEL BIOQUÍMICO" },
+        { code: "MATM055", name: "ÁLGEBRA" },
+        { code: "QUIM045", name: "BASES DE QUÍMICA" }
+      ],
+      "SEMESTRE 2": [
+        { code: "DYRE070", name: "EDUCACIÓN FÍSICA Y SALUD" },
+        { code: "FSCA095", name: "FÍSICA BÁSICA", reqs: ["MATM055"] },
+        { code: "HIPA110", name: "BIOLOGÍA HUMANA", reqs: ["BIMI070"] },
+        { code: "ICML085", name: "TALLER DE COMPUTACIÓN" },
+        { code: "MATM099", name: "CÁLCULO", reqs: ["MATM055"] },
+        { code: "QUIM095", name: "EQUILIBRIO QUÍMICO", reqs: ["QUIM045"] }
+      ],
+      "SEMESTRE 3": [
+        { code: "BIMI100", name: "BIOLOGÍA CELULAR CONTEMPORÁNEA", reqs: ["BIMI070"] },
+        { code: "CIDI085", name: "INGLÉS I", reqs: ["CIDI046"] },
+        { code: "FSCA165", name: "FÍSICA PARA BIOQUÍMICA", reqs: ["FSCA095", "MATM099"] },
+        { code: "QUIM157", name: "QUÍMICA ORGÁNICA", reqs: ["QUIM095"] },
+        { code: "QUIM126", name: "ANÁLISIS QUÍMICO", reqs: ["QUIM095"] },
+        { code: "QUIM185", name: "TERMODINÁMICA QUÍMICA", reqs: ["MATM099", "QUIM095"] }
+      ],
+      "SEMESTRE 4": [
+        { code: "BIMI120", name: "TALLER DE DISOLUCIONES ACUOSAS", reqs: ["QUIM095", "QUIM157", "MATM055"] },
+        { code: "CAEV127", name: "GENÉTICA CLÁSICA Y DE POBLACIONES", reqs: ["BIMI070"] },
+        { code: "CIDI097", name: "INGLÉS II", reqs: ["CIDI085"] },
+        { code: "ELECT13", name: "OPTATIVO DE FORMACIÓN GENERAL" },
+        { code: "ESTD105", name: "BIOESTADÍSTICA", reqs: ["MATM055"] },
+        { code: "QUIM158", name: "QUÍMICA ORGÁNICA APLICADA", reqs: ["QUIM157"] },
+        { code: "QUIM132", name: "CINÉTICA QUÍMICA", reqs: ["QUIM095", "QUIM185"] }
+      ],
+      "SEMESTRE 5": [
+        { code: "BIMI155", name: "MICROBIOLOGÍA", reqs: ["HIPA110"] },
+        { code: "BIMI200", name: "BIOQUÍMICA GENERAL", reqs: ["HIPA110", "CIDI097", "QUIM158", "QUIM132", "BIMI120"] },
+        { code: "BIMI215", name: "INSTRUMENTACIÓN BIOQUÍMICA", reqs: ["QUIM126", "FSCA165", "CIDI097", "QUIM158", "QUIM132", "BIMI120"] },
+        { code: "ESBI215", name: "TALLER DE INVESTIGACIÓN I", reqs: ["QUIM126", "BIMI100", "BIMI120"] }
+      ],
+      "SEMESTRE 6": [
+        { code: "BIMI150", name: "BIOQUÍMICA Y FISIOLOGÍA VEGETAL", reqs: ["BIMI200", "BIMI215"] },
+        { code: "BIMI225", name: "BIOLOGÍA MOLECULAR", reqs: ["CAEV127", "BIMI200", "BIMI215"] },
+        { code: "FISL135", name: "FISIOLOGÍA GENERAL Y DE SISTEMAS", reqs: ["BIMI100", "BIMI200"] },
+        { code: "INMU110", name: "INMUNOLOGÍA", reqs: ["BIMI200", "BIMI215"] }
+      ],
+      "SEMESTRE 7": [
+        { code: "BIMI160", name: "GESTIÓN DE PROYECTOS Y LABORATORIOS", reqs: ["BIMI200", "BIMI215", "ESBI215"] },
+        { code: "BIMI235", name: "BIOLOGÍA CELULAR MOLECULAR", reqs: ["BIMI225"] },
+        { code: "BIMI238", name: "BIOQUÍMICA CLÍNICA Y PATOLOGÍA MOLECULAR", reqs: ["BIMI225", "FISL135"] },
+        { code: "ELECT40", name: "ELECTIVO DE ESPECIALIDAD" },
+        { code: "ESBI223", name: "TALLER DE INVESTIGACIÓN II", reqs: ["BIMI200", "BIMI215", "ESBI215"] }
+      ],
+      "SEMESTRE 8": [
+        { code: "BIMI180", name: "BIOMEDICINA Y FARMACOLOGÍA", reqs: ["BIMI238"] },
+        { code: "BIMI245", name: "BIOTECNOLOGÍA MOLECULAR", reqs: ["BIMI225", "BIMI155", "ESBI223"] },
+        { code: "BIMI255", name: "DIAGNÓSTICO MOLECULAR, CLÍNICO Y MICROBIOLÓGICO", reqs: ["BIMI238", "INMU110", "BIMI155"] },
+        { code: "ESBI225", name: "PROYECTO DE INVESTIGACIÓN", reqs: ["BIMI225", "ESBI223"] },
+        { code: "ESBI295", name: "VINCULACIÓN CON EL ÁMBITO LABORAL", reqs: ["BIMI235", "BIMI160", "ESBI223"] }
+      ],
+      "SEMESTRE 9": [
+        { code: "ESBI250", name: "INTERNADO PROFESIONAL I", reqs: ["BIMI180", "BIMI245", "BIMI255", "ESBI295"] },
+        { code: "ESBI296", name: "TESIS I", reqs: ["BIMI180", "BIMI245", "BIMI255", "ESBI295"] }
+      ],
+      "SEMESTRE 10": [
+        { code: "ESBI270", name: "INTERNADO PROFESIONAL II", reqs: ["ESBI250"] },
+        { code: "ESBI297", name: "TESIS II", reqs: ["ESBI296"] }
+      ]
+    };
+
+    const state = JSON.parse(localStorage.getItem("malla-bioquimica") || "{}");
+
+    function saveState() {
+      localStorage.setItem("malla-bioquimica", JSON.stringify(state));
+    }
+
+    function isUnlocked(course) {
+      if (!course.reqs) return true;
+      return course.reqs.every(req => state[req]);
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+      for (const [semester, courses] of Object.entries(data)) {
+        const col = document.createElement("div");
+        col.className = "semester";
+        const h2 = document.createElement("h2");
+        h2.textContent = semester;
+        col.appendChild(h2);
+
+        for (const course of courses) {
+          const div = document.createElement("div");
+          div.className = "course";
+          div.textContent = `${course.code}: ${course.name}`;
+          if (state[course.code]) div.classList.add("passed");
+          else if (!isUnlocked(course)) {
+            div.classList.add("locked");
+            const tooltip = document.createElement("span");
+            tooltip.className = "tooltip";
+            tooltip.textContent = `Requiere: ${course.reqs.join(", ")}`;
+            div.appendChild(tooltip);
+          }
+          div.addEventListener("click", () => {
+            if (!div.classList.contains("locked")) {
+              state[course.code] = !state[course.code];
+              saveState();
+              renderGrid();
+            }
+          });
+          col.appendChild(div);
+        }
+        grid.appendChild(col);
+      }
+    }
+
+    renderGrid();
+  </script>
+</body>
+</html>
